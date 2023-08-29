@@ -22,7 +22,6 @@ public class BookServlet extends HttpServlet {
     private static final Gson GSON = new GsonBuilder().create();
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String uri = req.getRequestURI();
         Long id = Long.valueOf(req.getParameter("book"));
         Map<Long, Book> books = new HashMap<>();
 

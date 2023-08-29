@@ -20,7 +20,7 @@ import static junit.framework.TestCase.assertTrue;
 public class BookServletTest extends Mockito {
 
     @Test
-    public void doPostTest() throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public void doGetTest() throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(request.getParameter("book")).thenReturn("2");
@@ -32,5 +32,9 @@ public class BookServletTest extends Mockito {
 
         verify(request, atLeast(1)).getParameter("book");
         assertNotNull(response);
+    }
+    @Test
+    public void doPostTest(){
+
     }
 }
