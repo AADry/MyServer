@@ -1,17 +1,18 @@
 package dao;
 
-import java.sql.SQLException;
+import exception.DaoException;
+
 import java.util.List;
-import java.util.Optional;
 
 public interface CrudDao<T> {
-    Optional<T> get(long id) throws SQLException;
 
-    List<T> getAll();
+    T get(long id) throws DaoException;
 
-    void save(T t);
+    List<T> getAll() throws DaoException;
 
-    void update(T t, String[] params);
+    void save(T t) throws DaoException;
 
-    void delete(T t);
+    void update(T t) throws DaoException;
+
+    void delete(T t) throws DaoException;
 }

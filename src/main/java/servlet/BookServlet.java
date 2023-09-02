@@ -2,17 +2,16 @@ package servlet;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import dao.impl.BookDao;
+import dao.impl.PublisherDao;
+import exception.DaoException;
 import model.Book;
+import model.Publisher;
 
-import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @WebServlet(
         name = "BookServlet",
@@ -20,21 +19,72 @@ import java.util.Map;
 )
 public class BookServlet extends HttpServlet {
     private static final Gson GSON = new GsonBuilder().create();
+
     @Override
-    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Long id = Long.valueOf(req.getParameter("book"));
-        Map<Long, Book> books = new HashMap<>();
-
-            books.put(1L, new Book(1L, "first book"));
-            books.put(2L, new Book(2L, "second book"));
-
-        String json = GSON.toJson(books.get(id));
-
-        resp.setStatus(200);
-        resp.setHeader("Content-Type", "application/json");
-        try{
+    public void doGet(HttpServletRequest req, HttpServletResponse resp) {
+        Long id = Long.valueOf(req.getParameter("id"));
+        BookDao bookDao = new BookDao();
+        try {
+            Book book = bookDao.get(id);
+            String json = GSON.toJson(book);
+            resp.setStatus(200);
+            resp.setHeader("Content-Type", "application/json");
             resp.getOutputStream().println(json);
-        }catch (IOException e){
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) {
+        Long id = Long.valueOf(req.getParameter("id"));
+        String title = String.valueOf(req.getParameter("title"));
+        Long publisher_id = Long.valueOf(req.getParameter("publisher"));
+        BookDao bookDao = new BookDao();
+        Book book = new Book();
+        try {
+            Publisher publisher = new Publisher();
+            publisher.setId(publisher_id);
+            book.setPublisher(publisher);
+            book.setId(id);
+            book.setTitle(title);
+            bookDao.save(book);
+            resp.setStatus(200);
+        } catch (DaoException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void doDelete(HttpServletRequest req, HttpServletResponse resp) {
+        Long id = Long.valueOf(req.getParameter("id"));
+        String title = String.valueOf(req.getParameter("title"));
+        Book book = new Book();
+        BookDao bookDao = new BookDao();
+        book.setId(id);
+        book.setTitle(title);
+        try {
+            bookDao.delete(book);
+        } catch (DaoException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void doPut(HttpServletRequest req, HttpServletResponse resp) {
+        Long id = Long.valueOf(req.getParameter("id"));
+        String title = String.valueOf(req.getParameter("title"));
+        Long publisher_id = Long.valueOf(req.getParameter("publisher"));
+        Publisher publisher = new Publisher();
+        publisher.setId(publisher_id);
+        Book book = new Book();
+        book.setPublisher(publisher);
+        BookDao bookDao = new BookDao();
+        book.setTitle(title);
+        book.setId(id);
+        try {
+            bookDao.update(book);
+        } catch (DaoException e) {
             e.printStackTrace();
         }
     }
