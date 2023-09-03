@@ -1,6 +1,7 @@
 package servlet;
 
 import dbconnection.ConnectionManager;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.testcontainers.containers.JdbcDatabaseContainer;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Properties;
 
 import static junit.framework.TestCase.assertNotNull;
 import static org.mockito.Mockito.*;
@@ -24,11 +26,17 @@ public class PublisherServletTest {
             .withUsername("admin")
             .withPassword("admin");
 
+    @Before
+    public void setUp() {
+        Properties properties = new Properties();
+        properties.setProperty("url", postgreSQLContainer.getJdbcUrl());
+        properties.setProperty("username", postgreSQLContainer.getUsername());
+        properties.setProperty("password", postgreSQLContainer.getPassword());
+        ConnectionManager.setProperties(properties);
+    }
+
     @Test
     public void doGetTest() throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        ConnectionManager.setProperties(postgreSQLContainer.getJdbcUrl(),
-                postgreSQLContainer.getUsername(),
-                postgreSQLContainer.getUsername());
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(request.getParameter("id")).thenReturn("1");
@@ -44,9 +52,6 @@ public class PublisherServletTest {
 
     @Test
     public void doPostTest() throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        ConnectionManager.setProperties(postgreSQLContainer.getJdbcUrl(),
-                postgreSQLContainer.getUsername(),
-                postgreSQLContainer.getUsername());
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(request.getParameter("id")).thenReturn("2"); //put unique id here!
@@ -62,11 +67,9 @@ public class PublisherServletTest {
         verify(request, atLeast(1)).getParameter("name");
         assertNotNull(response);
     }
+
     @Test
     public void doPut() throws NoSuchMethodException, IOException, InvocationTargetException, IllegalAccessException {
-        ConnectionManager.setProperties(postgreSQLContainer.getJdbcUrl(),
-                postgreSQLContainer.getUsername(),
-                postgreSQLContainer.getUsername());
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(request.getParameter("id")).thenReturn("1");
@@ -82,11 +85,9 @@ public class PublisherServletTest {
         verify(request, atLeast(1)).getParameter("name");
         assertNotNull(response);
     }
+
     @Test
     public void doDelete() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IOException {
-        ConnectionManager.setProperties(postgreSQLContainer.getJdbcUrl(),
-                postgreSQLContainer.getUsername(),
-                postgreSQLContainer.getUsername());
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(request.getParameter("id")).thenReturn("2");

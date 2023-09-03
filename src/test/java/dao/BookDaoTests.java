@@ -10,6 +10,7 @@ import model.Author;
 import model.Book;
 import model.Publisher;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +20,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public class BookDaoTests {
     @Rule
@@ -28,12 +30,18 @@ public class BookDaoTests {
             .withUsername("postgres")
             .withPassword("admin");
 
+    @Before
+    public void setUp() {
+        Properties properties = new Properties();
+        properties.setProperty("url", postgreSQLContainer.getJdbcUrl());
+        properties.setProperty("username", postgreSQLContainer.getUsername());
+        properties.setProperty("password", postgreSQLContainer.getPassword());
+        ConnectionManager.setProperties(properties);
+    }
+
     @Test
     @DisplayName("should save Book in database then get it afterwards")
     public void save() throws DaoException {
-        ConnectionManager.setProperties(postgreSQLContainer.getJdbcUrl(),
-                postgreSQLContainer.getUsername(),
-                postgreSQLContainer.getPassword());
         BookDao bookDao = new BookDao();
         PublisherDao publisherDao = new PublisherDao();
         Publisher p = new Publisher();
@@ -61,9 +69,6 @@ public class BookDaoTests {
     @Test
     @DisplayName("should return list of books")
     public void getAll() throws DaoException {
-        ConnectionManager.setProperties(postgreSQLContainer.getJdbcUrl(),
-                postgreSQLContainer.getUsername(),
-                postgreSQLContainer.getPassword());
         BookDao bookDao = new BookDao();
         PublisherDao publisherDao = new PublisherDao();
         AuthorDao authorDao = new AuthorDao();
@@ -94,9 +99,6 @@ public class BookDaoTests {
     @Test
     @DisplayName("blah blah")
     public void delete() throws DaoException {
-        ConnectionManager.setProperties(postgreSQLContainer.getJdbcUrl(),
-                postgreSQLContainer.getUsername(),
-                postgreSQLContainer.getPassword());
         BookDao bookDao = new BookDao();
         PublisherDao publisherDao = new PublisherDao();
         AuthorDao authorDao = new AuthorDao();
@@ -126,9 +128,6 @@ public class BookDaoTests {
     @Test
     @DisplayName("blah")
     public void update() throws DaoException {
-        ConnectionManager.setProperties(postgreSQLContainer.getJdbcUrl(),
-                postgreSQLContainer.getUsername(),
-                postgreSQLContainer.getPassword());
         BookDao bookDao = new BookDao();
         PublisherDao publisherDao = new PublisherDao();
         Publisher p = new Publisher();

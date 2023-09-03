@@ -12,6 +12,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import java.io.*;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Properties;
 
 public class PublisherDaoTests {
     @Rule
@@ -21,12 +22,18 @@ public class PublisherDaoTests {
             .withUsername("postgres")
             .withPassword("admin");
 
+    @Before
+    public void setUp() {
+        Properties properties = new Properties();
+        properties.setProperty("url", postgreSQLContainer.getJdbcUrl());
+        properties.setProperty("username", postgreSQLContainer.getUsername());
+        properties.setProperty("password", postgreSQLContainer.getPassword());
+        ConnectionManager.setProperties(properties);
+    }
+
     @Test
     @DisplayName("should save Publisher in database then get it afterwards")
     public void save() throws DaoException {
-        ConnectionManager.setProperties(postgreSQLContainer.getJdbcUrl(),
-                postgreSQLContainer.getUsername(),
-                postgreSQLContainer.getPassword());
         PublisherDao publisherDao = new PublisherDao();
         Publisher p = new Publisher();
         p.setId(2);
@@ -34,15 +41,11 @@ public class PublisherDaoTests {
         p.setAddress("blah blah");
         publisherDao.save(p);
         Assert.assertNotNull(publisherDao.get(1));
-        //publisherDao.save((Publisher) new Object());
     }
 
     @Test
     @DisplayName("should return list of publishers")
     public void getAll() throws DaoException {
-        ConnectionManager.setProperties(postgreSQLContainer.getJdbcUrl(),
-                postgreSQLContainer.getUsername(),
-                postgreSQLContainer.getPassword());
         PublisherDao publisherDao = new PublisherDao();
         for (int i = 2; i < 111; i++) {
             Publisher p = new Publisher();
@@ -59,9 +62,6 @@ public class PublisherDaoTests {
     @Test
     @DisplayName("should delete publisher from db")
     public void delete() throws DaoException {
-        ConnectionManager.setProperties(postgreSQLContainer.getJdbcUrl(),
-                postgreSQLContainer.getUsername(),
-                postgreSQLContainer.getPassword());
         PublisherDao publisherDao = new PublisherDao();
         Publisher p = new Publisher();
         p.setId(2);
@@ -77,9 +77,6 @@ public class PublisherDaoTests {
     @Test
     @DisplayName("should update publisher in db")
     public void update() throws DaoException {
-        ConnectionManager.setProperties(postgreSQLContainer.getJdbcUrl(),
-                postgreSQLContainer.getUsername(),
-                postgreSQLContainer.getPassword());
         PublisherDao publisherDao = new PublisherDao();
         Publisher p = new Publisher();
         p.setId(2);

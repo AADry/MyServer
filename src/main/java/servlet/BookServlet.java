@@ -3,7 +3,6 @@ package servlet;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dao.impl.BookDao;
-import dao.impl.PublisherDao;
 import exception.DaoException;
 import model.Book;
 import model.Publisher;

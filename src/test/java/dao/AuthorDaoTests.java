@@ -10,18 +10,16 @@ import model.Author;
 import model.Book;
 import model.Publisher;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class AuthorDaoTests {
     @Rule
@@ -31,11 +29,17 @@ public class AuthorDaoTests {
             .withUsername("postgres")
             .withPassword("admin");
 
+    @Before
+    public void setUp() {
+        Properties properties = new Properties();
+        properties.setProperty("url", postgreSQLContainer.getJdbcUrl());
+        properties.setProperty("username", postgreSQLContainer.getUsername());
+        properties.setProperty("password", postgreSQLContainer.getPassword());
+        ConnectionManager.setProperties(properties);
+    }
+
     @Test
     public void save() throws DaoException {
-        ConnectionManager.setProperties(postgreSQLContainer.getJdbcUrl(),
-                postgreSQLContainer.getUsername(),
-                postgreSQLContainer.getPassword());
         AuthorDao authorDao = new AuthorDao();
         List<Book> list = new ArrayList<>();
         Author author = new Author();
@@ -47,9 +51,6 @@ public class AuthorDaoTests {
 
     @Test
     public void delete() throws DaoException {
-        ConnectionManager.setProperties(postgreSQLContainer.getJdbcUrl(),
-                postgreSQLContainer.getUsername(),
-                postgreSQLContainer.getPassword());
         AuthorDao authorDao = new AuthorDao();
         Author author = new Author();
         author.setId(1);
@@ -61,9 +62,6 @@ public class AuthorDaoTests {
 
     @Test
     public void update() throws DaoException {
-        ConnectionManager.setProperties(postgreSQLContainer.getJdbcUrl(),
-                postgreSQLContainer.getUsername(),
-                postgreSQLContainer.getPassword());
         AuthorDao authorDao = new AuthorDao();
         BookDao bookDao = new BookDao();
         PublisherDao publisherDao = new PublisherDao();
@@ -87,9 +85,6 @@ public class AuthorDaoTests {
 
     @Test
     public void getAll() throws DaoException {
-        ConnectionManager.setProperties(postgreSQLContainer.getJdbcUrl(),
-                postgreSQLContainer.getUsername(),
-                postgreSQLContainer.getPassword());
         BookDao bookDao = new BookDao();
         AuthorDao authorDao = new AuthorDao();
         PublisherDao publisherDao = new PublisherDao();

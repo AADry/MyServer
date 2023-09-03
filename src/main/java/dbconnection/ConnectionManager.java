@@ -4,6 +4,7 @@ package dbconnection;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public class ConnectionManager {
     static String connectionUrl = "jdbc:postgresql:smalldb";
@@ -21,7 +22,11 @@ public class ConnectionManager {
         dbUser = username;
         dbPwd = password;
     }
-
+    public static void setProperties(Properties properties){
+        connectionUrl = properties.getProperty("url");
+        dbUser = properties.getProperty("username");
+        dbPwd = properties.getProperty("password");
+    }
     private ConnectionManager() {
     }
 }
