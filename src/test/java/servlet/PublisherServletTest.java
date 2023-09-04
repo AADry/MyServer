@@ -4,6 +4,7 @@ import dao.impl.BookDao;
 import dao.impl.PublisherDao;
 import dbconnection.ConnectionManager;
 import exception.DaoException;
+import exception.ServiceException;
 import model.Publisher;
 import org.junit.Before;
 import org.junit.Rule;
@@ -11,6 +12,7 @@ import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
+import service.PublisherService;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -43,23 +45,23 @@ public class PublisherServletTest {
 
     @Test
     @DisplayName("Should take params from request and invoke service method 'get' ")
-    public void doGetTest() throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, DaoException {
+    public void doGetTest() throws IOException, ServiceException {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(request.getParameter("id")).thenReturn("1");
+        when(request.getParameter("name")).thenReturn("testPublisher");
+        when(request.getParameter("address")).thenReturn("testAddress");
         when(response.getOutputStream()).thenReturn(mock(ServletOutputStream.class));
 
-        PublisherDao publisherDao = mock(PublisherDao.class);
-        publisherServlet.publisherDao = publisherDao;
+        PublisherService publisherService = mock(PublisherService.class);
+        publisherServlet.publisherService = publisherService;
         publisherServlet.doGet(request, response);
-        verify(publisherDao, atLeast(1)).get(1);
-
-        verify(request, atLeast(1)).getParameter("id");
+        verify(publisherService, atLeast(1)).handleGetRequest(request,response);
     }
 
     @Test
     @DisplayName("Should take params from request and invoke service method 'save' ")
-    public void doPostTest() throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, DaoException {
+    public void doPostTest() throws IOException,  ServiceException {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(request.getParameter("id")).thenReturn("2"); //put unique id here!
@@ -67,18 +69,15 @@ public class PublisherServletTest {
         when(request.getParameter("address")).thenReturn("testAddress");
         when(response.getOutputStream()).thenReturn(mock(ServletOutputStream.class));
 
-        PublisherDao publisherDao = mock(PublisherDao.class);
-        publisherServlet.publisherDao = publisherDao;
+        PublisherService publisherService = mock(PublisherService.class);
+        publisherServlet.publisherService = publisherService;
         publisherServlet.doPost(request, response);
-        verify(publisherDao, atLeast(1)).save(isA(Publisher.class));
-
-        verify(request, atLeast(1)).getParameter("id");
-        verify(request, atLeast(1)).getParameter("name");
+        verify(publisherService, atLeast(1)).handlePostRequest(request,response);
     }
 
     @Test
     @DisplayName("Should take params from request and invoke service method 'update' ")
-    public void doPut() throws NoSuchMethodException, IOException, InvocationTargetException, IllegalAccessException, DaoException {
+    public void doPut() throws  IOException, ServiceException {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(request.getParameter("id")).thenReturn("1");
@@ -86,18 +85,15 @@ public class PublisherServletTest {
         when(request.getParameter("address")).thenReturn("testAddress");
         when(response.getOutputStream()).thenReturn(mock(ServletOutputStream.class));
 
-        PublisherDao publisherDao = mock(PublisherDao.class);
-        publisherServlet.publisherDao = publisherDao;
+        PublisherService publisherService = mock(PublisherService.class);
+        publisherServlet.publisherService = publisherService;
         publisherServlet.doPut(request, response);
-        verify(publisherDao, atLeast(1)).update(isA(Publisher.class));
-
-        verify(request, atLeast(1)).getParameter("id");
-        verify(request, atLeast(1)).getParameter("name");
+        verify(publisherService, atLeast(1)).handlePutRequest(request,response);
     }
 
     @Test
     @DisplayName("Should take params from request and invoke service method 'delete' ")
-    public void doDelete() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IOException, DaoException {
+    public void doDelete() throws  IOException,  ServiceException {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(request.getParameter("id")).thenReturn("2");
@@ -105,12 +101,9 @@ public class PublisherServletTest {
         when(request.getParameter("address")).thenReturn("testAddress");
         when(response.getOutputStream()).thenReturn(mock(ServletOutputStream.class));
 
-        PublisherDao publisherDao = mock(PublisherDao.class);
-        publisherServlet.publisherDao = publisherDao;
+        PublisherService publisherService = mock(PublisherService.class);
+        publisherServlet.publisherService = publisherService;
         publisherServlet.doDelete(request, response);
-        verify(publisherDao, atLeast(1)).delete(isA(Publisher.class));
-
-        verify(request, atLeast(1)).getParameter("id");
-        verify(request, atLeast(1)).getParameter("name");
+        verify(publisherService, atLeast(1)).handleDeleteRequest(request,response);
     }
 }

@@ -4,7 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dao.impl.PublisherDao;
 import exception.DaoException;
+import exception.ServiceException;
 import model.Publisher;
+import service.PublisherService;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,63 +20,64 @@ import java.net.HttpRetryException;
         urlPatterns = {"/publishers/*"}
 )
 public class PublisherServlet extends HttpServlet {
-    private static final Gson GSON = new GsonBuilder().create();
-    PublisherDao publisherDao = new PublisherDao();
+
+    PublisherService publisherService = new PublisherService();
 
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Long id = Long.valueOf(req.getParameter("id"));
         try {
-            Publisher publisher = publisherDao.get(id);
-            String json = GSON.toJson(publisher);
+            String json = publisherService.handleGetRequest(req, resp);
             resp.setStatus(200);
             resp.setHeader("Content-Type", "application/json");
             resp.getOutputStream().println(json);
-        } catch (DaoException e) {
-            throw new HttpRetryException(e.getMessage(), 404);
-        }
-
-    }
-
-    @Override
-    public void doPost(HttpServletRequest req, HttpServletResponse resp) {
-        Long id = Long.valueOf(req.getParameter("id"));
-        String name = String.valueOf(req.getParameter("name"));
-        String address = String.valueOf(req.getParameter("address"));
-        Publisher publisher = new Publisher(id, name, address);
-        try {
-            publisherDao.save(publisher);
-            resp.setStatus(200);
-        } catch (DaoException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public void doDelete(HttpServletRequest req, HttpServletResponse resp) {
-        Long id = Long.valueOf(req.getParameter("id"));
-        String name = String.valueOf(req.getParameter("name"));
-        String address = String.valueOf(req.getParameter("address"));
-        Publisher publisher = new Publisher(id, name, address);
-        try {
-            publisherDao.delete(publisher);
-            resp.setStatus(200);
-        } catch (DaoException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public void doPut(HttpServletRequest req, HttpServletResponse resp) {
-        Long id = Long.valueOf(req.getParameter("id"));
-        String name = String.valueOf(req.getParameter("name"));
-        String address = String.valueOf(req.getParameter("address"));
-        Publisher publisher = new Publisher(id, name, address);
-        try {
-            publisherDao.update(publisher);
-            resp.setStatus(200);
-        } catch (DaoException e) {
+        } catch (ServiceException e) {
             e.printStackTrace();
+            resp.setStatus(404);
+            resp.setHeader("Content-Type", "text/html");
+            resp.setCharacterEncoding("UTF-8");
+            resp.getOutputStream().println("Please try again");
+        }
+
+    }
+
+    @Override
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.setHeader("Content-Type", "text/html");
+        resp.setCharacterEncoding("UTF-8");
+        try {
+            publisherService.handlePostRequest(req, resp);
+            resp.setStatus(201);
+            resp.getOutputStream().println("Success");
+        } catch (ServiceException | IOException e) {
+            e.printStackTrace();
+            resp.setStatus(400);
+            resp.getOutputStream().println("Error");
+        }
+    }
+
+    @Override
+    public void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try {
+            publisherService.handleDeleteRequest(req, resp);
+            resp.setStatus(201);
+            resp.getOutputStream().println("Success");
+        } catch (ServiceException | IOException e) {
+            e.printStackTrace();
+            resp.setStatus(400);
+            resp.getOutputStream().println("Error");
+        }
+    }
+
+    @Override
+    public void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try {
+            publisherService.handlePutRequest(req, resp);
+            resp.setStatus(201);
+            resp.getOutputStream().println("Success");
+        } catch (ServiceException | IOException e) {
+            e.printStackTrace();
+            resp.setStatus(400);
+            resp.getOutputStream().println("Error");
         }
     }
 }

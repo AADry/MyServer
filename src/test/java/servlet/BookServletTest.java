@@ -4,6 +4,7 @@ import dao.impl.AuthorDao;
 import dao.impl.BookDao;
 import dbconnection.ConnectionManager;
 import exception.DaoException;
+import exception.ServiceException;
 import model.Author;
 import model.Book;
 import org.junit.Before;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.mockito.Mockito;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
+import service.BookService;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -44,24 +46,22 @@ public class BookServletTest extends Mockito {
 
     @Test
     @DisplayName("Should take params from request and invoke service method 'get' ")
-    public void doGetTest() throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, DaoException {
+    public void doGetTest() throws IOException, ServiceException {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(request.getParameter("id")).thenReturn("1");
         when(response.getOutputStream()).thenReturn(mock(ServletOutputStream.class));
 
-        BookDao bookDao = mock(BookDao.class);
-        bookServlet.bookDao = bookDao;
+        BookService bookService = mock(BookService.class);
+        bookServlet.bookService = bookService;
         bookServlet.doGet(request, response);
-        verify(bookDao, atLeast(1)).get(1);
+        verify(bookService, atLeast(1)).handleGetRequest(request, response);
 
-        verify(request, atLeast(1)).getParameter("id");
-        assertNotNull(response);
     }
 
     @Test
     @DisplayName("Should take params from request and invoke service method 'save' ")
-    public void doPostTest() throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, DaoException {
+    public void doPostTest() throws IOException, ServiceException {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(request.getParameter("id")).thenReturn("2"); //put unique id here!
@@ -69,19 +69,15 @@ public class BookServletTest extends Mockito {
         when(request.getParameter("publisher")).thenReturn("1");
         when(response.getOutputStream()).thenReturn(mock(ServletOutputStream.class));
 
-        BookDao bookDao = mock(BookDao.class);
-        bookServlet.bookDao = bookDao;
+        BookService bookService = mock(BookService.class);
+        bookServlet.bookService = bookService;
         bookServlet.doPost(request, response);
-        verify(bookDao, atLeast(1)).save(isA(Book.class));
-
-        verify(request, atLeast(1)).getParameter("id");
-        verify(request, atLeast(1)).getParameter("title");
-        assertNotNull(response);
+        verify(bookService, atLeast(1)).handlePostRequest(request, response);
     }
 
     @Test
     @DisplayName("Should take params from request and invoke service method 'update' ")
-    public void doPut() throws NoSuchMethodException, IOException, InvocationTargetException, IllegalAccessException, DaoException {
+    public void doPut() throws IOException, ServiceException {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(request.getParameter("id")).thenReturn("1");
@@ -89,19 +85,16 @@ public class BookServletTest extends Mockito {
         when(request.getParameter("publisher")).thenReturn("1");
         when(response.getOutputStream()).thenReturn(mock(ServletOutputStream.class));
 
-        BookDao bookDao = mock(BookDao.class);
-        bookServlet.bookDao = bookDao;
+        BookService bookService = mock(BookService.class);
+        bookServlet.bookService = bookService;
         bookServlet.doPut(request, response);
-        verify(bookDao, atLeast(1)).update(isA(Book.class));
+        verify(bookService, atLeast(1)).handlePutRequest(request, response);
 
-        verify(request, atLeast(1)).getParameter("id");
-        verify(request, atLeast(1)).getParameter("title");
-        assertNotNull(response);
     }
 
     @Test
     @DisplayName("Should take params from request and invoke service method 'delete' ")
-    public void doDelete() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IOException, DaoException {
+    public void doDelete() throws IOException, ServiceException {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(request.getParameter("id")).thenReturn("2");
@@ -109,13 +102,10 @@ public class BookServletTest extends Mockito {
         when(request.getParameter("publisher")).thenReturn("1");
         when(response.getOutputStream()).thenReturn(mock(ServletOutputStream.class));
 
-        BookDao bookDao = mock(BookDao.class);
-        bookServlet.bookDao = bookDao;
+        BookService bookService = mock(BookService.class);
+        bookServlet.bookService = bookService;
         bookServlet.doDelete(request, response);
-        verify(bookDao, atLeast(1)).delete(isA(Book.class));
+        verify(bookService, atLeast(1)).handleDeleteRequest(request, response);
 
-        verify(request, atLeast(1)).getParameter("id");
-        verify(request, atLeast(1)).getParameter("title");
-        assertNotNull(response);
     }
 }

@@ -7,6 +7,10 @@ public class Author {
     String name;
     List<Book> books;
 
+    public Author(Long id) {
+        this.id = id;
+    }
+
     public long getId() {
         return id;
     }

@@ -2,76 +2,79 @@ package servlet;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import dao.impl.AuthorDao;
-import exception.DaoException;
-import model.Author;
+import exception.ServiceException;
+import service.AuthorService;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.HttpRetryException;
 
 @WebServlet(
         name = "AuthorServlet",
         urlPatterns = {"/authors/*"}
 )
 public class AuthorServlet extends HttpServlet {
-    private static final Gson GSON = new GsonBuilder().create();
-    protected AuthorDao authorDao = new AuthorDao();
+    protected AuthorService authorService = new AuthorService();
 
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Long id = Long.valueOf(req.getParameter("id"));
         try {
-            Author author = authorDao.get(id);
-            String json = GSON.toJson(author);
+            String json = authorService.handleGetRequest(req, resp);
             resp.setStatus(200);
             resp.setHeader("Content-Type", "application/json");
             resp.getOutputStream().println(json);
-        } catch (DaoException e) {
-            throw new HttpRetryException(e.getMessage(), 404);
+        } catch (ServiceException e) {
+            e.printStackTrace();
+            resp.setStatus(404);
+            resp.setHeader("Content-Type", "text/html");
+            resp.setCharacterEncoding("UTF-8");
+            resp.getOutputStream().println("Please try again");
         }
-
     }
 
     @Override
-    public void doPost(HttpServletRequest req, HttpServletResponse resp) {
-        Long id = Long.valueOf(req.getParameter("id"));
-        String name = String.valueOf(req.getParameter("name"));
-        Author author = new Author(id, name);
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.setHeader("Content-Type", "text/html");
+        resp.setCharacterEncoding("UTF-8");
         try {
-            authorDao.save(author);
+            authorService.handlePostRequest(req, resp);
             resp.setStatus(201);
-        } catch (DaoException e) {
+            resp.getOutputStream().println("Success");
+        } catch (ServiceException | IOException e) {
             e.printStackTrace();
+            resp.setStatus(400);
+            resp.getOutputStream().println("Error");
+        }
+
+    }
+
+    @Override
+    public void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try {
+            authorService.handleDeleteRequest(req, resp);
+            resp.setStatus(201);
+            resp.getOutputStream().println("Success");
+        } catch (ServiceException | IOException e) {
+            e.printStackTrace();
+            resp.setStatus(400);
+            resp.getOutputStream().println("Error");
         }
     }
 
     @Override
-    public void doDelete(HttpServletRequest req, HttpServletResponse resp) {
-        Long id = Long.valueOf(req.getParameter("id"));
-        String name = String.valueOf(req.getParameter("name"));
-        Author author = new Author(id, name);
+    public void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.setHeader("Content-Type", "text/html");
+        resp.setCharacterEncoding("UTF-8");
         try {
-            authorDao.delete(author);
+            authorService.handlePutRequest(req, resp);
             resp.setStatus(200);
-        } catch (DaoException e) {
+            resp.getOutputStream().println("Success");
+        } catch (ServiceException e) {
             e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void doPut(HttpServletRequest req, HttpServletResponse resp) {
-        Long id = Long.valueOf(req.getParameter("id"));
-        String name = String.valueOf(req.getParameter("name"));
-        Author author = new Author(id, name);
-        try {
-            authorDao.update(author);
-            resp.setStatus(200);
-        } catch (DaoException e) {
-            e.printStackTrace();
+            resp.setStatus(400);
+            resp.getOutputStream().println("Error");
         }
     }
 }
