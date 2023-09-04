@@ -19,11 +19,11 @@ import java.net.HttpRetryException;
 )
 public class AuthorServlet extends HttpServlet {
     private static final Gson GSON = new GsonBuilder().create();
+    protected AuthorDao authorDao = new AuthorDao();
 
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Long id = Long.valueOf(req.getParameter("id"));
-        AuthorDao authorDao = new AuthorDao();
         try {
             Author author = authorDao.get(id);
             String json = GSON.toJson(author);
@@ -40,7 +40,6 @@ public class AuthorServlet extends HttpServlet {
     public void doPost(HttpServletRequest req, HttpServletResponse resp) {
         Long id = Long.valueOf(req.getParameter("id"));
         String name = String.valueOf(req.getParameter("name"));
-        AuthorDao authorDao = new AuthorDao();
         Author author = new Author(id, name);
         try {
             authorDao.save(author);
@@ -54,7 +53,6 @@ public class AuthorServlet extends HttpServlet {
     public void doDelete(HttpServletRequest req, HttpServletResponse resp) {
         Long id = Long.valueOf(req.getParameter("id"));
         String name = String.valueOf(req.getParameter("name"));
-        AuthorDao authorDao = new AuthorDao();
         Author author = new Author(id, name);
         try {
             authorDao.delete(author);
@@ -68,7 +66,6 @@ public class AuthorServlet extends HttpServlet {
     public void doPut(HttpServletRequest req, HttpServletResponse resp) {
         Long id = Long.valueOf(req.getParameter("id"));
         String name = String.valueOf(req.getParameter("name"));
-        AuthorDao authorDao = new AuthorDao();
         Author author = new Author(id, name);
         try {
             authorDao.update(author);

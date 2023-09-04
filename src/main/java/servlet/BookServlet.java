@@ -2,6 +2,7 @@ package servlet;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import dao.impl.AuthorDao;
 import dao.impl.BookDao;
 import exception.DaoException;
 import model.Book;
@@ -18,11 +19,11 @@ import javax.servlet.http.HttpServletResponse;
 )
 public class BookServlet extends HttpServlet {
     private static final Gson GSON = new GsonBuilder().create();
+    protected BookDao bookDao = new BookDao();
 
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) {
         Long id = Long.valueOf(req.getParameter("id"));
-        BookDao bookDao = new BookDao();
         try {
             Book book = bookDao.get(id);
             String json = GSON.toJson(book);
@@ -39,7 +40,6 @@ public class BookServlet extends HttpServlet {
         Long id = Long.valueOf(req.getParameter("id"));
         String title = String.valueOf(req.getParameter("title"));
         Long publisher_id = Long.valueOf(req.getParameter("publisher"));
-        BookDao bookDao = new BookDao();
         Book book = new Book();
         try {
             Publisher publisher = new Publisher();
@@ -59,7 +59,6 @@ public class BookServlet extends HttpServlet {
         Long id = Long.valueOf(req.getParameter("id"));
         String title = String.valueOf(req.getParameter("title"));
         Book book = new Book();
-        BookDao bookDao = new BookDao();
         book.setId(id);
         book.setTitle(title);
         try {
@@ -78,7 +77,6 @@ public class BookServlet extends HttpServlet {
         publisher.setId(publisher_id);
         Book book = new Book();
         book.setPublisher(publisher);
-        BookDao bookDao = new BookDao();
         book.setTitle(title);
         book.setId(id);
         try {

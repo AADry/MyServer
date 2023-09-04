@@ -19,11 +19,11 @@ import java.net.HttpRetryException;
 )
 public class PublisherServlet extends HttpServlet {
     private static final Gson GSON = new GsonBuilder().create();
+    PublisherDao publisherDao = new PublisherDao();
 
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Long id = Long.valueOf(req.getParameter("id"));
-        PublisherDao publisherDao = new PublisherDao();
         try {
             Publisher publisher = publisherDao.get(id);
             String json = GSON.toJson(publisher);
@@ -41,7 +41,6 @@ public class PublisherServlet extends HttpServlet {
         Long id = Long.valueOf(req.getParameter("id"));
         String name = String.valueOf(req.getParameter("name"));
         String address = String.valueOf(req.getParameter("address"));
-        PublisherDao publisherDao = new PublisherDao();
         Publisher publisher = new Publisher(id, name, address);
         try {
             publisherDao.save(publisher);
@@ -56,7 +55,6 @@ public class PublisherServlet extends HttpServlet {
         Long id = Long.valueOf(req.getParameter("id"));
         String name = String.valueOf(req.getParameter("name"));
         String address = String.valueOf(req.getParameter("address"));
-        PublisherDao publisherDao = new PublisherDao();
         Publisher publisher = new Publisher(id, name, address);
         try {
             publisherDao.delete(publisher);
@@ -71,7 +69,6 @@ public class PublisherServlet extends HttpServlet {
         Long id = Long.valueOf(req.getParameter("id"));
         String name = String.valueOf(req.getParameter("name"));
         String address = String.valueOf(req.getParameter("address"));
-        PublisherDao publisherDao = new PublisherDao();
         Publisher publisher = new Publisher(id, name, address);
         try {
             publisherDao.update(publisher);

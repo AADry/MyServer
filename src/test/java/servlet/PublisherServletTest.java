@@ -1,9 +1,14 @@
 package servlet;
 
+import dao.impl.BookDao;
+import dao.impl.PublisherDao;
 import dbconnection.ConnectionManager;
+import exception.DaoException;
+import model.Publisher;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 
@@ -25,6 +30,7 @@ public class PublisherServletTest {
             .withDatabaseName("small")
             .withUsername("admin")
             .withPassword("admin");
+    PublisherServlet publisherServlet = new PublisherServlet();
 
     @Before
     public void setUp() {
@@ -36,22 +42,24 @@ public class PublisherServletTest {
     }
 
     @Test
-    public void doGetTest() throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    @DisplayName("Should take params from request and invoke service method 'get' ")
+    public void doGetTest() throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, DaoException {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(request.getParameter("id")).thenReturn("1");
         when(response.getOutputStream()).thenReturn(mock(ServletOutputStream.class));
 
-        Method doGet = PublisherServlet.class.getDeclaredMethod("doGet", HttpServletRequest.class, HttpServletResponse.class);
-        doGet.setAccessible(true);
-        doGet.invoke(new PublisherServlet(), request, response);
+        PublisherDao publisherDao = mock(PublisherDao.class);
+        publisherServlet.publisherDao = publisherDao;
+        publisherServlet.doGet(request, response);
+        verify(publisherDao, atLeast(1)).get(1);
 
         verify(request, atLeast(1)).getParameter("id");
-        assertNotNull(response);
     }
 
     @Test
-    public void doPostTest() throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    @DisplayName("Should take params from request and invoke service method 'save' ")
+    public void doPostTest() throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, DaoException {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(request.getParameter("id")).thenReturn("2"); //put unique id here!
@@ -59,17 +67,18 @@ public class PublisherServletTest {
         when(request.getParameter("address")).thenReturn("testAddress");
         when(response.getOutputStream()).thenReturn(mock(ServletOutputStream.class));
 
-        Method doGet = PublisherServlet.class.getDeclaredMethod("doPost", HttpServletRequest.class, HttpServletResponse.class);
-        doGet.setAccessible(true);
-        doGet.invoke(new PublisherServlet(), request, response);
+        PublisherDao publisherDao = mock(PublisherDao.class);
+        publisherServlet.publisherDao = publisherDao;
+        publisherServlet.doPost(request, response);
+        verify(publisherDao, atLeast(1)).save(isA(Publisher.class));
 
         verify(request, atLeast(1)).getParameter("id");
         verify(request, atLeast(1)).getParameter("name");
-        assertNotNull(response);
     }
 
     @Test
-    public void doPut() throws NoSuchMethodException, IOException, InvocationTargetException, IllegalAccessException {
+    @DisplayName("Should take params from request and invoke service method 'update' ")
+    public void doPut() throws NoSuchMethodException, IOException, InvocationTargetException, IllegalAccessException, DaoException {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(request.getParameter("id")).thenReturn("1");
@@ -77,17 +86,18 @@ public class PublisherServletTest {
         when(request.getParameter("address")).thenReturn("testAddress");
         when(response.getOutputStream()).thenReturn(mock(ServletOutputStream.class));
 
-        Method doGet = PublisherServlet.class.getDeclaredMethod("doPut", HttpServletRequest.class, HttpServletResponse.class);
-        doGet.setAccessible(true);
-        doGet.invoke(new PublisherServlet(), request, response);
+        PublisherDao publisherDao = mock(PublisherDao.class);
+        publisherServlet.publisherDao = publisherDao;
+        publisherServlet.doPut(request, response);
+        verify(publisherDao, atLeast(1)).update(isA(Publisher.class));
 
         verify(request, atLeast(1)).getParameter("id");
         verify(request, atLeast(1)).getParameter("name");
-        assertNotNull(response);
     }
 
     @Test
-    public void doDelete() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IOException {
+    @DisplayName("Should take params from request and invoke service method 'delete' ")
+    public void doDelete() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IOException, DaoException {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(request.getParameter("id")).thenReturn("2");
@@ -95,12 +105,12 @@ public class PublisherServletTest {
         when(request.getParameter("address")).thenReturn("testAddress");
         when(response.getOutputStream()).thenReturn(mock(ServletOutputStream.class));
 
-        Method doGet = PublisherServlet.class.getDeclaredMethod("doDelete", HttpServletRequest.class, HttpServletResponse.class);
-        doGet.setAccessible(true);
-        doGet.invoke(new PublisherServlet(), request, response);
+        PublisherDao publisherDao = mock(PublisherDao.class);
+        publisherServlet.publisherDao = publisherDao;
+        publisherServlet.doDelete(request, response);
+        verify(publisherDao, atLeast(1)).delete(isA(Publisher.class));
 
         verify(request, atLeast(1)).getParameter("id");
         verify(request, atLeast(1)).getParameter("name");
-        assertNotNull(response);
     }
 }

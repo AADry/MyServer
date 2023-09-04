@@ -21,6 +21,7 @@ public class PublisherDaoTests {
             .withDatabaseName("small")
             .withUsername("postgres")
             .withPassword("admin");
+    PublisherDao publisherDao = new PublisherDao();
 
     @Before
     public void setUp() {
@@ -34,7 +35,6 @@ public class PublisherDaoTests {
     @Test
     @DisplayName("should save Publisher in database then get it afterwards")
     public void save() throws DaoException {
-        PublisherDao publisherDao = new PublisherDao();
         Publisher p = new Publisher();
         p.setId(2);
         p.setName("blah");
@@ -46,7 +46,6 @@ public class PublisherDaoTests {
     @Test
     @DisplayName("should return list of publishers")
     public void getAll() throws DaoException {
-        PublisherDao publisherDao = new PublisherDao();
         for (int i = 2; i < 111; i++) {
             Publisher p = new Publisher();
             p.setId(i);
@@ -62,7 +61,6 @@ public class PublisherDaoTests {
     @Test
     @DisplayName("should delete publisher from db")
     public void delete() throws DaoException {
-        PublisherDao publisherDao = new PublisherDao();
         Publisher p = new Publisher();
         p.setId(2);
         p.setName("blah");
@@ -77,7 +75,6 @@ public class PublisherDaoTests {
     @Test
     @DisplayName("should update publisher in db")
     public void update() throws DaoException {
-        PublisherDao publisherDao = new PublisherDao();
         Publisher p = new Publisher();
         p.setId(2);
         p.setName("switch");
