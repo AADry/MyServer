@@ -29,22 +29,7 @@ import static junit.framework.TestCase.assertNotNull;
 import static org.mockito.Mockito.*;
 
 public class PublisherServletTest {
-    @Rule
-    public JdbcDatabaseContainer postgreSQLContainer = new PostgreSQLContainer("postgres:latest")
-            .withInitScript("init.sql")
-            .withDatabaseName("small")
-            .withUsername("admin")
-            .withPassword("admin");
     PublisherServlet publisherServlet = new PublisherServlet();
-
-    @Before
-    public void setUp() throws IOException {
-        URL url = Thread.currentThread().getContextClassLoader().getResource("dbproperties.cfg");
-        Properties properties = new Properties();
-        properties.load(new FileReader(url.getPath()));
-        properties.setProperty("url", postgreSQLContainer.getJdbcUrl());
-        ConnectionManager.setProperties(properties);
-    }
 
     @Test
     @DisplayName("Should take params from request and invoke service method 'get' ")
