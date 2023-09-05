@@ -10,6 +10,7 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.io.*;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
@@ -24,11 +25,11 @@ public class PublisherDaoTests {
     PublisherDao publisherDao = new PublisherDao();
 
     @Before
-    public void setUp() {
+    public void setUp() throws IOException {
+        URL url = Thread.currentThread().getContextClassLoader().getResource("dbproperties.cfg");
         Properties properties = new Properties();
+        properties.load(new FileReader(url.getPath()));
         properties.setProperty("url", postgreSQLContainer.getJdbcUrl());
-        properties.setProperty("username", postgreSQLContainer.getUsername());
-        properties.setProperty("password", postgreSQLContainer.getPassword());
         ConnectionManager.setProperties(properties);
     }
 

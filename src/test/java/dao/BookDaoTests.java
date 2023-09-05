@@ -17,6 +17,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,11 +35,11 @@ public class BookDaoTests {
             .withPassword("admin");
 
     @Before
-    public void setUp() {
+    public void setUp() throws IOException {
+        URL url = Thread.currentThread().getContextClassLoader().getResource("dbproperties.cfg");
         Properties properties = new Properties();
+        properties.load(new FileReader(url.getPath()));
         properties.setProperty("url", postgreSQLContainer.getJdbcUrl());
-        properties.setProperty("username", postgreSQLContainer.getUsername());
-        properties.setProperty("password", postgreSQLContainer.getPassword());
         ConnectionManager.setProperties(properties);
     }
 

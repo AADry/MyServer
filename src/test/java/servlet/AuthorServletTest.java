@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.Properties;
 
 import static junit.framework.TestCase.assertNotNull;
@@ -40,11 +41,11 @@ public class AuthorServletTest {
     private static final Gson GSON = new GsonBuilder().create();
 
     @Before
-    public void setUp() {
+    public void setUp() throws IOException {
+        URL url = Thread.currentThread().getContextClassLoader().getResource("dbproperties.cfg");
         Properties properties = new Properties();
+        properties.load(new FileReader(url.getPath()));
         properties.setProperty("url", postgreSQLContainer.getJdbcUrl());
-        properties.setProperty("username", postgreSQLContainer.getUsername());
-        properties.setProperty("password", postgreSQLContainer.getPassword());
         ConnectionManager.setProperties(properties);
     }
 
