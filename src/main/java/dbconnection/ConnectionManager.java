@@ -7,12 +7,12 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class ConnectionManager {
-    static String connectionUrl = "jdbc:postgresql:smalldb";
-    static String dbUser = "postgres";
-    static String dbPwd = "admin";
+    static String connectionUrl;
+    static String dbUser;
+    static String dbPwd;
 
     public static Connection getConnection() throws SQLException {
-        Connection conn = null;
+        Connection conn;
         conn = DriverManager.getConnection(connectionUrl, dbUser, dbPwd);
         return conn;
     }
