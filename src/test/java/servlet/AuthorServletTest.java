@@ -2,32 +2,20 @@ package servlet;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import dao.impl.AuthorDao;
-import dao.impl.PublisherDao;
-import dbconnection.ConnectionManager;
 import exception.DaoException;
 import exception.ServiceException;
 import model.Author;
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
-import org.testcontainers.containers.JdbcDatabaseContainer;
-import org.testcontainers.containers.PostgreSQLContainer;
 import service.AuthorService;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.util.Properties;
 
-import static junit.framework.TestCase.assertNotNull;
 import static org.mockito.Mockito.*;
 
 public class AuthorServletTest {
@@ -81,7 +69,7 @@ public class AuthorServletTest {
 
     @Test
     @DisplayName("Should take params from request and invoke service method 'delete' ")
-    public void doDelete() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IOException, DaoException, ServiceException {
+    public void doDelete() throws IOException, ServiceException {
 
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);

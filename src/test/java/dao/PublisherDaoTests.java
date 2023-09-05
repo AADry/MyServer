@@ -26,9 +26,8 @@ public class PublisherDaoTests {
 
     @Before
     public void setUp() throws IOException {
-        URL url = Thread.currentThread().getContextClassLoader().getResource("dbproperties.cfg");
         Properties properties = new Properties();
-        properties.load(new FileReader(url.getPath()));
+        properties.load(getClass().getClassLoader().getResourceAsStream("dbproperties.cfg"));
         properties.setProperty("url", postgreSQLContainer.getJdbcUrl());
         ConnectionManager.setProperties(properties);
     }

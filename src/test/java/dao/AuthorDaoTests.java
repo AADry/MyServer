@@ -1,7 +1,6 @@
 package dao;
 
 import dao.impl.AuthorDao;
-import dao.impl.BookAuthorDao;
 import dao.impl.BookDao;
 import dao.impl.PublisherDao;
 import dbconnection.ConnectionManager;
@@ -16,10 +15,7 @@ import org.junit.Test;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -35,9 +31,8 @@ public class AuthorDaoTests {
 
     @Before
     public void setUp() throws IOException {
-        URL url = Thread.currentThread().getContextClassLoader().getResource("dbproperties.cfg");
         Properties properties = new Properties();
-        properties.load(new FileReader(url.getPath()));
+        properties.load(getClass().getClassLoader().getResourceAsStream("dbproperties.cfg"));
         properties.setProperty("url", postgreSQLContainer.getJdbcUrl());
         ConnectionManager.setProperties(properties);
     }
