@@ -1,7 +1,6 @@
 package dao;
 
 import dao.impl.AuthorDao;
-import dao.impl.BookAuthorDao;
 import dao.impl.BookDao;
 import dao.impl.PublisherDao;
 import dbconnection.ConnectionManager;
@@ -16,18 +15,18 @@ import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.net.URL;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+@Testcontainers
 public class BookDaoTests {
     @Rule
+    @Container
     public JdbcDatabaseContainer postgreSQLContainer = new PostgreSQLContainer("postgres:latest")
             .withInitScript("init.sql")
             .withDatabaseName("small")

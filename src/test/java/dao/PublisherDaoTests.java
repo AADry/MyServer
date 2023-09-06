@@ -4,19 +4,24 @@ import dao.impl.PublisherDao;
 import dbconnection.ConnectionManager;
 import exception.DaoException;
 import model.Publisher;
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.io.*;
-import java.net.URL;
-import java.sql.SQLException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 
+@Testcontainers
 public class PublisherDaoTests {
     @Rule
+    @Container
     public JdbcDatabaseContainer postgreSQLContainer = new PostgreSQLContainer("postgres:latest")
             .withInitScript("init.sql")
             .withDatabaseName("small")

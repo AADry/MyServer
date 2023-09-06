@@ -14,15 +14,18 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-
+@Testcontainers
 public class AuthorDaoTests {
     @Rule
+    @Container
     public JdbcDatabaseContainer postgreSQLContainer = new PostgreSQLContainer("postgres:latest")
             .withInitScript("init.sql")
             .withDatabaseName("small")
