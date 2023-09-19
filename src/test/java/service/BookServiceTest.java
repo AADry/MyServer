@@ -3,8 +3,11 @@ package service;
 import dao.impl.BookDao;
 import exception.DaoException;
 import exception.ServiceException;
+import launch.AppConfig;
 import model.Book;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,7 +16,8 @@ import java.io.IOException;
 import static org.mockito.Mockito.*;
 
 public class BookServiceTest {
-    BookService bookService = new BookService();
+    ApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
+    BookService bookService = applicationContext.getBean(BookService.class);
     BookDao bookDao = mock(BookDao.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
     HttpServletResponse response = mock(HttpServletResponse.class);

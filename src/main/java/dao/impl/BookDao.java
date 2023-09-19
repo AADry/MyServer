@@ -1,23 +1,18 @@
 package dao.impl;
 
 import dao.CrudDao;
+import dbconnection.ConnectionManager;
 import exception.DaoException;
 import model.Author;
 import model.Book;
+import model.Publisher;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import dbconnection.ConnectionManager;
-import model.Publisher;
-
 public class BookDao implements CrudDao<Book> {
     Connection connection;
-
 
     private Connection getConnection() throws DaoException {
         try {
@@ -81,6 +76,7 @@ public class BookDao implements CrudDao<Book> {
 
     public List<Book> getAll() throws DaoException {
         try {
+            ArrayList<Integer> a;
             connection = getConnection();
             String selectStatement = "SELECT book.id, book.title, book.publisher_id, publisher.name, " +
                     "publisher.address FROM public.book " +

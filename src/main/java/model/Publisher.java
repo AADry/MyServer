@@ -4,7 +4,8 @@ public class Publisher {
     long id;
     String name;
     String address;
-    public Publisher(){
+
+    public Publisher() {
 
     }
 

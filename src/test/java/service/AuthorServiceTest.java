@@ -3,18 +3,27 @@ package service;
 import dao.impl.AuthorDao;
 import exception.DaoException;
 import exception.ServiceException;
+import launch.AppConfig;
 import model.Author;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.*;
 import java.io.IOException;
 
 import static org.mockito.Mockito.*;
 
 public class AuthorServiceTest {
-    AuthorService authorService = new AuthorService();
+    ApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
+    AuthorService authorService = applicationContext.getBean(AuthorService.class);
     AuthorDao authorDao = mock(AuthorDao.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
     HttpServletResponse response = mock(HttpServletResponse.class);

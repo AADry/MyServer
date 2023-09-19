@@ -1,8 +1,8 @@
 package servlet;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import exception.ServiceException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import service.AuthorService;
 
 import javax.servlet.annotation.WebServlet;
@@ -16,7 +16,8 @@ import java.io.IOException;
         urlPatterns = {"/authors/*"}
 )
 public class AuthorServlet extends HttpServlet {
-    protected AuthorService authorService = new AuthorService();
+    @Autowired
+    protected AuthorService authorService;
 
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

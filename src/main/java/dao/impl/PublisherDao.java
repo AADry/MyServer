@@ -15,7 +15,6 @@ import java.util.List;
 public class PublisherDao implements CrudDao<Publisher> {
     Connection connection;
 
-
     private Connection getConnection() throws DaoException {
         try {
             return ConnectionManager.getConnection();

@@ -1,7 +1,6 @@
 package model;
 
 import java.util.List;
-
 public class Author {
     long id;
     String name;

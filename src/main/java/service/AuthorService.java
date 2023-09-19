@@ -6,14 +6,22 @@ import dao.impl.AuthorDao;
 import exception.DaoException;
 import exception.ServiceException;
 import model.Author;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
+@Service
 public class AuthorService {
-    private static final Gson GSON = new GsonBuilder().create();
-    protected AuthorDao authorDao = new AuthorDao();
+    @Autowired
+    private Gson GSON;
+    @Autowired
+    protected AuthorDao authorDao;
+
 
     public String handleGetRequest(HttpServletRequest req, HttpServletResponse resp) throws ServiceException {
         Long id = Long.valueOf(req.getParameter("id"));

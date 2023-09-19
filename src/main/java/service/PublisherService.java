@@ -5,16 +5,19 @@ import com.google.gson.GsonBuilder;
 import dao.impl.PublisherDao;
 import exception.DaoException;
 import exception.ServiceException;
-import model.Author;
 import model.Publisher;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
+@Service
 public class PublisherService {
-    private static final Gson GSON = new GsonBuilder().create();
-    PublisherDao publisherDao = new PublisherDao();
+    @Autowired
+    private Gson GSON;
+    @Autowired
+    protected PublisherDao publisherDao;
 
     public String handleGetRequest(HttpServletRequest req, HttpServletResponse resp) throws ServiceException {
         Long id = Long.valueOf(req.getParameter("id"));

@@ -2,22 +2,23 @@ package service;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import dao.impl.AuthorDao;
 import dao.impl.BookDao;
-import dao.impl.PublisherDao;
 import exception.DaoException;
 import exception.ServiceException;
-import model.Author;
 import model.Book;
 import model.Publisher;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
+@Service
 public class BookService {
-    private static final Gson GSON = new GsonBuilder().create();
-    protected BookDao bookDao = new BookDao();
+    @Autowired
+    private Gson GSON;
+    @Autowired
+    protected BookDao bookDao;
 
     public String handleGetRequest(HttpServletRequest req, HttpServletResponse resp) throws ServiceException {
         Long id = Long.valueOf(req.getParameter("id"));

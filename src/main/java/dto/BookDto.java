@@ -1,12 +1,20 @@
-package model;
+package dto;
+
+import model.Author;
+import model.Publisher;
 
 import java.util.List;
 
-public class Book {
+public class BookDto {
     private String title;
     private List<Author> authors;
     private Publisher publisher;
     private long id;
+    private int authorsNum;
+
+    public BookDto() {
+
+    }
 
     public Publisher getPublisher() {
         return publisher;
@@ -30,6 +38,7 @@ public class Book {
 
     public void setAuthors(List<Author> authors) {
         this.authors = authors;
+        authorsNum = authors.size();
     }
 
     public long getId() {

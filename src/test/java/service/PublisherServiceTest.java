@@ -3,8 +3,11 @@ package service;
 import dao.impl.PublisherDao;
 import exception.DaoException;
 import exception.ServiceException;
+import launch.AppConfig;
 import model.Publisher;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,7 +16,8 @@ import java.io.IOException;
 import static org.mockito.Mockito.*;
 
 public class PublisherServiceTest {
-    PublisherService publisherService = new PublisherService();
+    ApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
+    PublisherService publisherService = applicationContext.getBean(PublisherService.class);
     PublisherDao publisherDao = mock(PublisherDao.class);
     HttpServletRequest request = mock(HttpServletRequest.class);
     HttpServletResponse response = mock(HttpServletResponse.class);

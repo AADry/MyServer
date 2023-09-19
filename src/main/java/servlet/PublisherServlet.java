@@ -1,11 +1,7 @@
 package servlet;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import dao.impl.PublisherDao;
-import exception.DaoException;
 import exception.ServiceException;
-import model.Publisher;
+import org.springframework.beans.factory.annotation.Autowired;
 import service.PublisherService;
 
 import javax.servlet.annotation.WebServlet;
@@ -13,15 +9,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.HttpRetryException;
 
 @WebServlet(
         name = "PublisherServlet",
         urlPatterns = {"/publishers/*"}
 )
 public class PublisherServlet extends HttpServlet {
-
-    PublisherService publisherService = new PublisherService();
+    @Autowired
+    PublisherService publisherService;
 
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

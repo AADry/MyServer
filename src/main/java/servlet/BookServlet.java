@@ -1,13 +1,7 @@
 package servlet;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import dao.impl.AuthorDao;
-import dao.impl.BookDao;
-import exception.DaoException;
 import exception.ServiceException;
-import model.Book;
-import model.Publisher;
+import org.springframework.beans.factory.annotation.Autowired;
 import service.BookService;
 
 import javax.servlet.annotation.WebServlet;
@@ -21,7 +15,8 @@ import java.io.IOException;
         urlPatterns = {"/books/*"}
 )
 public class BookServlet extends HttpServlet {
-    protected BookService bookService = new BookService();
+    @Autowired
+    protected BookService bookService;
 
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
