@@ -1,10 +1,13 @@
 package service;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import dao.impl.AuthorDao;
+import dto.AuthorDto;
+import dto.BookDto;
 import exception.DaoException;
 import exception.ServiceException;
+import mapper.AuthorDtoMapper;
+import mapper.BookDtoMapper;
 import model.Author;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,46 +15,40 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
 @Service
 public class AuthorService {
-    @Autowired
-    private Gson GSON;
-    @Autowired
-    protected AuthorDao authorDao;
+    private final AuthorDao authorDao;
+    private final AuthorDtoMapper mapper;
+
+    public AuthorService(AuthorDao authorDao, AuthorDtoMapper mapper) {
+        this.authorDao = authorDao;
+        this.mapper = mapper;
+    }
 
 
-    public String handleGetRequest(HttpServletRequest req, HttpServletResponse resp) throws ServiceException {
-        Long id = Long.valueOf(req.getParameter("id"));
-        String json;
+    public AuthorDto handleGetRequest(long id) throws ServiceException {
+        AuthorDto authorDto;
         try {
             Author author = authorDao.get(id);
-            json = GSON.toJson(author);
+            authorDto = mapper.toDto(author);
         } catch (DaoException e) {
             e.printStackTrace();
             throw new ServiceException(e.getMessage(), e);
         }
-        return json;
+        return authorDto;
     }
 
-    public void handlePostRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServiceException {
-        Long id = Long.valueOf(req.getParameter("id"));
-        String name = String.valueOf(req.getParameter("name"));
-        Author author = new Author(id, name);
+    public void handlePostRequest(Author author) throws IOException, ServiceException {
         try {
-            authorDao.save(author);
+            authorDao.update(author);
         } catch (DaoException e) {
             e.printStackTrace();
             throw new ServiceException(e.getMessage(), e);
         }
     }
 
-    public void handlePutRequest(HttpServletRequest req, HttpServletResponse resp) throws ServiceException {
-        Long id = Long.valueOf(req.getParameter("id"));
-        String name = String.valueOf(req.getParameter("name"));
-        Author author = new Author(id, name);
+    public void handlePutRequest(Author author) throws ServiceException {
         try {
             authorDao.update(author);
         } catch (DaoException e) {
@@ -59,12 +56,11 @@ public class AuthorService {
         }
     }
 
-    public void handleDeleteRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServiceException {
-        Long id = Long.valueOf(req.getParameter("id"));
-        String name = String.valueOf(req.getParameter("name"));
-        Author author = new Author(id, name);
+    public void handleDeleteRequest(long id) throws IOException, ServiceException {
+        AuthorDto authorDto = new AuthorDto();
+        authorDto.setId(id);
         try {
-            authorDao.delete(author);
+            authorDao.delete(mapper.toAuthor(authorDto));
         } catch (DaoException e) {
             throw new ServiceException(e.getMessage(), e);
         }

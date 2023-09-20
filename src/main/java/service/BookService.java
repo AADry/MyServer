@@ -3,8 +3,10 @@ package service;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dao.impl.BookDao;
+import dto.BookDto;
 import exception.DaoException;
 import exception.ServiceException;
+import mapper.BookDtoMapper;
 import model.Book;
 import model.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,35 +17,29 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 @Service
 public class BookService {
-    @Autowired
-    private Gson GSON;
-    @Autowired
-    protected BookDao bookDao;
 
-    public String handleGetRequest(HttpServletRequest req, HttpServletResponse resp) throws ServiceException {
-        Long id = Long.valueOf(req.getParameter("id"));
-        String json;
+    private final BookDao bookDao;
+    private final BookDtoMapper mapper;
+
+    public BookService(BookDao bookDao, BookDtoMapper mapper) {
+        this.bookDao = bookDao;
+        this.mapper = mapper;
+    }
+
+    public BookDto handleGetRequest(long id) throws ServiceException {
+        BookDto bookDto;
         try {
             Book book = bookDao.get(id);
-            json = GSON.toJson(book);
+            bookDto = mapper.toDTO(book);
         } catch (DaoException e) {
             e.printStackTrace();
             throw new ServiceException(e.getMessage(), e);
         }
-        return json;
+        return bookDto;
     }
 
-    public void handlePostRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServiceException {
-        Long id = Long.valueOf(req.getParameter("id"));
-        String title = String.valueOf(req.getParameter("title"));
-        Long publisher_id = Long.valueOf(req.getParameter("publisher"));
-        Book book = new Book();
+    public void handlePostRequest(Book book) throws IOException, ServiceException {
         try {
-            Publisher publisher = new Publisher();
-            publisher.setId(publisher_id);
-            book.setPublisher(publisher);
-            book.setId(id);
-            book.setTitle(title);
             bookDao.save(book);
         } catch (DaoException e) {
             e.printStackTrace();
@@ -51,17 +47,8 @@ public class BookService {
         }
     }
 
-    public void handlePutRequest(HttpServletRequest req, HttpServletResponse resp) throws ServiceException {
-        Long id = Long.valueOf(req.getParameter("id"));
-        String title = String.valueOf(req.getParameter("title"));
-        Long publisher_id = Long.valueOf(req.getParameter("publisher"));
-        Book book = new Book();
+    public void handlePutRequest(Book book) throws ServiceException {
         try {
-            Publisher publisher = new Publisher();
-            publisher.setId(publisher_id);
-            book.setPublisher(publisher);
-            book.setId(id);
-            book.setTitle(title);
             bookDao.update(book);
         } catch (DaoException e) {
             e.printStackTrace();
@@ -69,18 +56,11 @@ public class BookService {
         }
     }
 
-    public void handleDeleteRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServiceException {
-        Long id = Long.valueOf(req.getParameter("id"));
-        String title = String.valueOf(req.getParameter("title"));
-        Long publisherId = Long.valueOf(req.getParameter("publisher"));
-        Book book = new Book();
+    public void handleDeleteRequest(long id) throws IOException, ServiceException {
+        BookDto bookDto = new BookDto();
         try {
-            Publisher publisher = new Publisher();
-            publisher.setId(publisherId);
-            book.setPublisher(publisher);
-            book.setId(id);
-            book.setTitle(title);
-            bookDao.delete(book);
+            bookDto.setId(id);
+            bookDao.delete(mapper.toBook(bookDto));
         } catch (DaoException e) {
             e.printStackTrace();
             throw new ServiceException(e.getMessage(), e);

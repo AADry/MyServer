@@ -1,9 +1,16 @@
 package service;
 
+import dao.impl.AuthorDao;
 import dao.impl.BookDao;
+import dto.AuthorDto;
+import dto.BookDto;
 import exception.DaoException;
 import exception.ServiceException;
 import launch.AppConfig;
+import mapper.AuthorDtoMapper;
+import mapper.BookDtoMapper;
+import mapper.BookDtoMapperImpl;
+import model.Author;
 import model.Book;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
@@ -16,60 +23,38 @@ import java.io.IOException;
 import static org.mockito.Mockito.*;
 
 public class BookServiceTest {
-    ApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
-    BookService bookService = applicationContext.getBean(BookService.class);
     BookDao bookDao = mock(BookDao.class);
-    HttpServletRequest request = mock(HttpServletRequest.class);
-    HttpServletResponse response = mock(HttpServletResponse.class);
+    BookDtoMapper bookDtoMapper = mock(BookDtoMapper.class);
+    BookService bookService = new BookService(bookDao, bookDtoMapper);
 
 
     @Test
     public void handleGetTest() throws DaoException, ServiceException {
-        when(bookDao.get(1)).thenReturn(new Book());
-        bookService.bookDao = bookDao;
-        when(request.getParameter("id")).thenReturn(String.valueOf(1));
-        bookService.handleGetRequest(request, response);
+        when(bookDao.get(1L)).thenReturn(new Book());
+        when(bookDtoMapper.toDTO(any())).thenReturn(new BookDto());
+
+        bookService.handleGetRequest(1);
+
         verify(bookDao, atLeast(1)).get(1);
-        verify(request, atLeast(1)).getParameter("id");
+        verify(bookDtoMapper, atLeast(1)).toDTO(any());
     }
 
     @Test
-    public void handlePostTest() throws DaoException, ServiceException, IOException {
-        bookService.bookDao = bookDao;
-        when(request.getParameter("id")).thenReturn(String.valueOf(1));
-        when(request.getParameter("title")).thenReturn("book1");
-        when(request.getParameter("publisher")).thenReturn(String.valueOf(1));
-        bookService.handlePostRequest(request, response);
+    public void handlePostTest() throws DaoException, ServiceException, IOException {;
+        bookService.handlePostRequest(new Book());
         verify(bookDao, atLeast(1)).save(any());
-        verify(request, atLeast(1)).getParameter("id");
-        verify(request, atLeast(1)).getParameter("title");
-        verify(request, atLeast(1)).getParameter("publisher");
     }
 
     @Test
     public void handlePutTest() throws DaoException, ServiceException, IOException {
-        bookService.bookDao = bookDao;
-        when(request.getParameter("id")).thenReturn(String.valueOf(1));
-        when(request.getParameter("title")).thenReturn("book1");
-        when(request.getParameter("publisher")).thenReturn(String.valueOf(1));
-        bookService.handlePutRequest(request, response);
+        bookService.handlePutRequest(new Book());
         verify(bookDao, atLeast(1)).update(any());
-        verify(request, atLeast(1)).getParameter("id");
-        verify(request, atLeast(1)).getParameter("title");
-        verify(request, atLeast(1)).getParameter("publisher");
     }
 
     @Test
     public void handleDeleteTest() throws DaoException, ServiceException, IOException {
-        bookService.bookDao = bookDao;
-        when(request.getParameter("id")).thenReturn(String.valueOf(1));
-        when(request.getParameter("title")).thenReturn("book1");
-        when(request.getParameter("publisher")).thenReturn(String.valueOf(1));
-        bookService.handleDeleteRequest(request, response);
+        bookService.handleDeleteRequest(1L);
         verify(bookDao, atLeast(1)).delete(any());
-        verify(request, atLeast(1)).getParameter("id");
-        verify(request, atLeast(1)).getParameter("title");
-        verify(request, atLeast(1)).getParameter("publisher");
-
+        verify(bookDtoMapper, atLeast(1)).toBook(any());
     }
 }

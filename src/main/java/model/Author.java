@@ -1,10 +1,17 @@
 package model;
 
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-public class Author {
+import java.util.Set;
+
+
+public class Author{
+
     long id;
     String name;
-    List<Book> books;
+    List<Book> books = new ArrayList<>();
 
     public Author(Long id) {
         this.id = id;
