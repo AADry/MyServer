@@ -1,12 +1,22 @@
 package model;
 
+import jakarta.persistence.*;
+
 import java.util.List;
 
+@Entity
+@Table(name = "book")
 public class Book {
     private String title;
+    @ManyToMany
     private List<Author> authors;
+    @ManyToOne
     private Publisher publisher;
+    @Id
     private long id;
+
+    public Book() {
+    }
 
     public Publisher getPublisher() {
         return publisher;

@@ -1,17 +1,14 @@
 package controller;
 
-import dto.BookDto;
 import dto.PublisherDto;
 import exception.ServiceException;
 import launch.AppConfig;
-import model.Book;
 import model.Publisher;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import service.BookService;
 import service.PublisherService;
 
 import java.io.IOException;

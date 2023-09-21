@@ -1,12 +1,22 @@
 package model;
 
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "publisher")
 public class Publisher {
+    @Id
     long id;
+    @Column(name = "name")
     String name;
+    @Column(name = "address")
     String address;
 
     public Publisher() {
-
     }
 
     public Publisher(long id, String name, String address) {

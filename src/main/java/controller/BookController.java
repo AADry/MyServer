@@ -1,17 +1,13 @@
 package controller;
 
-import com.google.common.base.Preconditions;
 import dto.BookDto;
 import exception.ServiceException;
 import model.Book;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import service.AuthorService;
 import service.BookService;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @RestController

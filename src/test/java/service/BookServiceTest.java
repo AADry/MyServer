@@ -1,60 +1,55 @@
 package service;
 
-import dao.impl.AuthorDao;
-import dao.impl.BookDao;
-import dto.AuthorDto;
 import dto.BookDto;
 import exception.DaoException;
 import exception.ServiceException;
-import launch.AppConfig;
-import mapper.AuthorDtoMapper;
 import mapper.BookDtoMapper;
-import mapper.BookDtoMapperImpl;
-import model.Author;
 import model.Book;
 import org.junit.Test;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import repository.BookRepository;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
 public class BookServiceTest {
-    BookDao bookDao = mock(BookDao.class);
+    BookRepository repository = mock(BookRepository.class);
     BookDtoMapper bookDtoMapper = mock(BookDtoMapper.class);
-    BookService bookService = new BookService(bookDao, bookDtoMapper);
+    BookService bookService = new BookService(bookDtoMapper);
 
 
     @Test
     public void handleGetTest() throws DaoException, ServiceException {
-        when(bookDao.get(1L)).thenReturn(new Book());
+        bookService.bookRepository = repository;
+        when(repository.findById(1L)).thenReturn(Optional.of(new Book()));
         when(bookDtoMapper.toDTO(any())).thenReturn(new BookDto());
 
         bookService.handleGetRequest(1);
 
-        verify(bookDao, atLeast(1)).get(1);
+        verify(repository, atLeast(1)).findById(1L);
         verify(bookDtoMapper, atLeast(1)).toDTO(any());
     }
 
     @Test
     public void handlePostTest() throws DaoException, ServiceException, IOException {;
+        bookService.bookRepository = repository;
         bookService.handlePostRequest(new Book());
-        verify(bookDao, atLeast(1)).save(any());
+        verify(repository, atLeast(1)).save(any());
     }
 
     @Test
     public void handlePutTest() throws DaoException, ServiceException, IOException {
+        bookService.bookRepository = repository;
         bookService.handlePutRequest(new Book());
-        verify(bookDao, atLeast(1)).update(any());
+        verify(repository, atLeast(1)).save(any());
     }
 
     @Test
     public void handleDeleteTest() throws DaoException, ServiceException, IOException {
+        bookService.bookRepository = repository;
         bookService.handleDeleteRequest(1L);
-        verify(bookDao, atLeast(1)).delete(any());
+        verify(repository, atLeast(1)).delete(any());
         verify(bookDtoMapper, atLeast(1)).toBook(any());
     }
 }

@@ -1,11 +1,9 @@
 package controller;
 
 import dto.AuthorDto;
-import dto.BookDto;
 import exception.ServiceException;
 import launch.AppConfig;
 import model.Author;
-import model.Book;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;

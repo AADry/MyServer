@@ -1,68 +1,50 @@
 package service;
 
-import com.google.gson.Gson;
-import dao.impl.AuthorDao;
 import dto.AuthorDto;
-import dto.BookDto;
-import exception.DaoException;
 import exception.ServiceException;
 import mapper.AuthorDtoMapper;
-import mapper.BookDtoMapper;
 import model.Author;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import repository.AuthorRepository;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 @Service
 public class AuthorService {
-    private final AuthorDao authorDao;
+    @Autowired
+    protected AuthorRepository authorRepository;
     private final AuthorDtoMapper mapper;
 
-    public AuthorService(AuthorDao authorDao, AuthorDtoMapper mapper) {
-        this.authorDao = authorDao;
+    @Autowired
+    public AuthorService(AuthorDtoMapper mapper) {
         this.mapper = mapper;
     }
 
 
     public AuthorDto handleGetRequest(long id) throws ServiceException {
         AuthorDto authorDto;
-        try {
-            Author author = authorDao.get(id);
-            authorDto = mapper.toDto(author);
-        } catch (DaoException e) {
-            e.printStackTrace();
-            throw new ServiceException(e.getMessage(), e);
+        Optional<Author> author = authorRepository.findById(id);
+        if (author.isPresent()) {
+            authorDto = mapper.toDto(author.get());
+            return authorDto;
+        } else {
+            throw new ServiceException("not found");
         }
-        return authorDto;
     }
 
     public void handlePostRequest(Author author) throws IOException, ServiceException {
-        try {
-            authorDao.update(author);
-        } catch (DaoException e) {
-            e.printStackTrace();
-            throw new ServiceException(e.getMessage(), e);
-        }
+        authorRepository.save(author);
     }
 
     public void handlePutRequest(Author author) throws ServiceException {
-        try {
-            authorDao.update(author);
-        } catch (DaoException e) {
-            throw new ServiceException(e.getMessage(), e);
-        }
+        authorRepository.save(author);
     }
 
     public void handleDeleteRequest(long id) throws IOException, ServiceException {
         AuthorDto authorDto = new AuthorDto();
         authorDto.setId(id);
-        try {
-            authorDao.delete(mapper.toAuthor(authorDto));
-        } catch (DaoException e) {
-            throw new ServiceException(e.getMessage(), e);
-        }
+        authorRepository.delete(mapper.toAuthor(authorDto));
     }
 }

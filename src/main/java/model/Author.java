@@ -1,17 +1,20 @@
 package model;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
+
 import java.util.List;
-import java.util.Set;
 
-
+@Entity
+@Table(name = "author")
 public class Author{
-
+    @Id
     long id;
     String name;
-    List<Book> books = new ArrayList<>();
+    @ManyToMany
+    private List<Book> books;
 
     public Author(Long id) {
         this.id = id;
