@@ -8,7 +8,7 @@ import java.util.List;
 @Table(name = "book")
 public class Book {
     private String title;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Author> authors;
     @ManyToOne
     private Publisher publisher;
@@ -16,6 +16,11 @@ public class Book {
     private long id;
 
     public Book() {
+    }
+
+    public Book(String title, long id) {
+        this.title = title;
+        this.id = id;
     }
 
     public Publisher getPublisher() {

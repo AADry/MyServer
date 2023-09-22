@@ -15,7 +15,6 @@ import java.io.IOException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-@RunWith(SpringRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
 public class PublisherControllerTest {
     private final PublisherService service = mock(PublisherService.class);

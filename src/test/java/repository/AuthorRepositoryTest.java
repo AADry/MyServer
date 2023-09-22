@@ -2,6 +2,7 @@ package repository;
 
 import launch.AppConfig;
 import model.Author;
+import model.Book;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -15,6 +16,9 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @Testcontainers
@@ -43,8 +47,13 @@ public class AuthorRepositoryTest {
         Author author = new Author();
         author.setId(2L);
         author.setName("blah");
+        List<Book> books = new ArrayList<Book>();
+        books.add(new Book());
+        books.add(new Book());
+        books.add(new Book());
         repository.save(author);
         Assert.assertTrue(repository.findById(2L).isPresent());
+
     }
 
     @Test
@@ -63,6 +72,7 @@ public class AuthorRepositoryTest {
         author.setId(2L);
         author.setName("blah");
         repository.save(author);
+        author = repository.findById(2L).get();
         Assert.assertTrue(repository.findById(2L).isPresent());
     }
 

@@ -16,7 +16,6 @@ import java.io.IOException;
 
 import static org.mockito.Mockito.*;
 
-@RunWith(SpringRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
 public class BookControllerTest {
     private final BookService service = mock(BookService.class);

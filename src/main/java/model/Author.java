@@ -1,9 +1,6 @@
 package model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.List;
 
@@ -13,7 +10,7 @@ public class Author{
     @Id
     long id;
     String name;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Book> books;
 
     public Author(Long id) {
